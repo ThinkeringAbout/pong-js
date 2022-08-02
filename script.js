@@ -4,7 +4,7 @@ function init() {
   player2 = new rect("#fff", game.width - 30, game.height / 2 - 40, 20, 120);
   player1.scores = 0;
   player2.scores = 0;
-  ball = new rect("#fad", 40, game.height / 2 - 10, 20, 20);
+  ball = new rect("#fad", game.width / 2, game.height / 2 , 20, 20);
   canvas = document.querySelector(".pong");
   canvas.width = game.width;
   canvas.height = game.height;
@@ -27,6 +27,40 @@ function draw() {
   player1.draw();
   player2.draw();
   ball.draw();
+  ball.x += xOffset;
+  ball.y += yOffset;
+  if (ball.y > game.height - ball.height || ball.y == 0) {
+    yOffset *= -1;
+  }
+  if (ball.y > player2.y && ball.y < player2.y + player2.height && ball.x > 750 && ball.x < 752) {
+    xOffset *= -1;
+  } else if (ball.x > 770) {
+    player1.scores++;
+    ball.x = game.width / 2;
+    ball.y = game.height / 2;
+    xOffset *= -1;
+  }
+  if (ball.y > player1.y && ball.y < player1.y + player1.height && ball.x < 30 && ball.x > 28) {
+    xOffset *= -1;
+  } else if (ball.x < 10) {
+    player2.scores++;
+    ball.x = game.width / 2;
+    ball.y = game.height / 2;
+    xOffset *= -1;
+  }
+  if (player1.scores > player2.scores && player1.scores == 5) {
+    xOffset = 0;
+    yOffset = 0;
+    context.clearRect(0, 0, game.width, game.height);
+    context.font = 'bold 64px courier';
+    context.fillText("Player 1 wins", game.width / 2, 0);
+  } else if (player2.scores > player1.scores && player2.scores == 5){
+    xOffset = 0;
+    yOffset = 0;
+    context.clearRect(0, 0, game.width, game.height);
+    context.font = 'bold 64px courier';
+    context.fillText("Player 2 wins", game.width / 2, 0);
+  }
 }
 
 function rect(color, x, y, width, height) {
@@ -41,7 +75,9 @@ function rect(color, x, y, width, height) {
   }
 }
 
-
+let xOffset = 1;
+let yOffset = 1;
+let speed = 10;
 window.onload = init;
 document.addEventListener('keydown', function(event) {
   if (event.code == "ArrowDown") {
@@ -62,4 +98,4 @@ document.addEventListener('keydown', function(event) {
     }
   }
 })
-setInterval(draw, 1);
+setInterval(draw, speed);
